@@ -9,12 +9,11 @@ import * as THREE from 'three';
 export default function EarthGlobe() {
   const meshRef = useRef(null);
   const gridRef = useRef(null);
-  const atmoRef = useRef(null);
 
   /* Very slow, cinematic rotation */
   useFrame((_, delta) => {
-    if (meshRef.current) meshRef.current.rotation.y += delta * 0.018;
-    if (gridRef.current) gridRef.current.rotation.y += delta * 0.018;
+    if (meshRef.current) meshRef.current.rotation.y += delta * 0.016;
+    if (gridRef.current) gridRef.current.rotation.y += delta * 0.016;
   });
 
   /* Lat/lon grid geometry */
@@ -53,14 +52,24 @@ export default function EarthGlobe() {
     return geo;
   }, []);
 
-  /* Atmospheres */
-  const innerAtmosGeo  = useMemo(() => new THREE.SphereGeometry(1.08, 32, 32), []);
-  const outerAtmosGeo  = useMemo(() => new THREE.SphereGeometry(1.18, 32, 32), []);
+  /* Atmosphere layers */
+  const innerAtmosGeo = useMemo(() => new THREE.SphereGeometry(1.09, 32, 32), []);
+  const midAtmosGeo   = useMemo(() => new THREE.SphereGeometry(1.16, 32, 32), []);
+  const outerAtmosGeo = useMemo(() => new THREE.SphereGeometry(1.25, 32, 32), []);
 
   const innerAtmosMat = useMemo(() => new THREE.MeshBasicMaterial({
-    color: new THREE.Color(0x0a1e40),
+    color: new THREE.Color(0x0a2040),
     transparent: true,
-    opacity: 0.18,
+    opacity: 0.22,
+    side: THREE.BackSide,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  }), []);
+
+  const midAtmosMat = useMemo(() => new THREE.MeshBasicMaterial({
+    color: new THREE.Color(0x051525),
+    transparent: true,
+    opacity: 0.12,
     side: THREE.BackSide,
     blending: THREE.AdditiveBlending,
     depthWrite: false,
@@ -69,7 +78,7 @@ export default function EarthGlobe() {
   const outerAtmosMat = useMemo(() => new THREE.MeshBasicMaterial({
     color: new THREE.Color(0x04101e),
     transparent: true,
-    opacity: 0.07,
+    opacity: 0.06,
     side: THREE.BackSide,
     blending: THREE.AdditiveBlending,
     depthWrite: false,
@@ -81,25 +90,24 @@ export default function EarthGlobe() {
       <mesh ref={meshRef}>
         <sphereGeometry args={[1, 64, 64]} />
         <meshStandardMaterial
-          color={new THREE.Color(0x030810)}
-          roughness={0.92}
-          metalness={0.05}
+          color={new THREE.Color(0x020609)}
+          roughness={0.94}
+          metalness={0.04}
         />
       </mesh>
 
       {/* Lat/lon grid — very subtle blue-gray */}
       <lineSegments ref={gridRef} geometry={gridGeo}>
         <lineBasicMaterial
-          color={new THREE.Color(0x162848)}
+          color={new THREE.Color(0x142040)}
           transparent
-          opacity={0.28}
+          opacity={0.24}
         />
       </lineSegments>
 
-      {/* Blue atmospheric rim — inner */}
+      {/* Blue atmospheric rim — three layers for depth */}
       <mesh geometry={innerAtmosGeo} material={innerAtmosMat} />
-
-      {/* Blue atmospheric rim — outer (softer) */}
+      <mesh geometry={midAtmosGeo}   material={midAtmosMat}   />
       <mesh geometry={outerAtmosGeo} material={outerAtmosMat} />
     </group>
   );

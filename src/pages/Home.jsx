@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Globe, Zap, Shield, Layers, BarChart2, Clock, TrendingUp } from 'lucide-react';
 import './Home.css';
@@ -44,8 +44,31 @@ const USE_CASES = [
   { emoji: '🌱', title: 'Reforestation',      desc: 'Track deforestation and recovery programs' },
 ];
 
+/**
+ * useReveal — attaches an IntersectionObserver to add .is-visible when element enters viewport
+ */
+function useReveal(threshold = 0.12) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { el.classList.add('is-visible'); observer.unobserve(el); } },
+      { threshold }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+  return ref;
+}
+
 export default function Home() {
   const navigate = useNavigate();
+
+  const statsRef    = useReveal(0.1);
+  const featuresRef = useReveal(0.08);
+  const usecasesRef = useReveal(0.08);
+  const ctaRef      = useReveal(0.1);
 
   return (
     <div className="home-page">
@@ -112,7 +135,11 @@ export default function Home() {
       </section>
 
       {/* ══ STATS ══ */}
-      <section className="home-stats" aria-label="Platform statistics">
+      <section
+        ref={statsRef}
+        className="home-stats reveal"
+        aria-label="Platform statistics"
+      >
         {STATS.map(({ icon: Icon, value, label }, i) => (
           <React.Fragment key={label}>
             <div className="home-stat">
@@ -128,7 +155,11 @@ export default function Home() {
       </section>
 
       {/* ══ FEATURES ══ */}
-      <section className="home-features" aria-labelledby="features-heading">
+      <section
+        ref={featuresRef}
+        className="home-features reveal"
+        aria-labelledby="features-heading"
+      >
         <div className="home-section-header">
           <p className="home-section-eyebrow">CAPABILITIES</p>
           <h2 id="features-heading" className="home-section-title">
@@ -140,10 +171,14 @@ export default function Home() {
         </div>
 
         <div className="home-features__grid">
-          {FEATURES.map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="home-feature-card">
+          {FEATURES.map(({ icon: Icon, title, desc }, i) => (
+            <div
+              key={title}
+              className={`home-feature-card reveal reveal-delay-${i + 1}`}
+              style={{ animationDelay: `${i * 0.08}s` }}
+            >
               <div className="home-feature-card__icon">
-                <Icon size={18} aria-hidden="true" />
+                <Icon size={17} aria-hidden="true" />
               </div>
               <h3 className="home-feature-card__title">{title}</h3>
               <p className="home-feature-card__desc">{desc}</p>
@@ -153,7 +188,11 @@ export default function Home() {
       </section>
 
       {/* ══ USE CASES ══ */}
-      <section className="home-usecases" aria-labelledby="usecases-heading">
+      <section
+        ref={usecasesRef}
+        className="home-usecases reveal"
+        aria-labelledby="usecases-heading"
+      >
         <div className="home-section-header">
           <p className="home-section-eyebrow">APPLICATIONS</p>
           <h2 id="usecases-heading" className="home-section-title">
@@ -185,7 +224,11 @@ export default function Home() {
       </section>
 
       {/* ══ CTA ══ */}
-      <section className="home-cta" aria-labelledby="cta-heading">
+      <section
+        ref={ctaRef}
+        className="home-cta reveal"
+        aria-labelledby="cta-heading"
+      >
         <p className="home-section-eyebrow">READY TO BEGIN</p>
         <h2 id="cta-heading" className="home-cta__title">
           Your first satellite insight is<br />

@@ -12,13 +12,13 @@ export default function AnalysisResult({ result, isAnalyzing }) {
       <div className="sq-result__header">
         <h2 className="sq-result__title">
           <span className="sq-result__icon" aria-hidden="true">
-            <Sparkles size={14} />
+            <Sparkles size={13} />
           </span>
-          Analysis Result
+          AI Intelligence
         </h2>
         {result && (
           <span className="sq-result__badge sq-result__badge--success">
-            <CheckCircle size={11} /> Complete
+            <CheckCircle size={10} /> Analysis Complete
           </span>
         )}
       </div>
@@ -27,11 +27,11 @@ export default function AnalysisResult({ result, isAnalyzing }) {
         {isAnalyzing ? (
           <div className="sq-result__loading" aria-live="polite" aria-busy="true">
             <LoadingSpinner size="lg" label="Analyzing satellite imagery..." />
-            <p className="sq-result__loading-text">Analyzing satellite imagery...</p>
+            <p className="sq-result__loading-text">Processing imagery…</p>
             <div className="sq-result__loading-steps">
-              <LoadingStep label="Preprocessing image" done={true} />
-              <LoadingStep label="Running AI model" done={false} active={true} />
-              <LoadingStep label="Generating insights" done={false} />
+              <LoadingStep label="Satellite positioning" done={true} />
+              <LoadingStep label="Scanning imagery" done={false} active={true} />
+              <LoadingStep label="Generating intelligence" done={false} />
             </div>
           </div>
         ) : !result ? (
@@ -43,18 +43,18 @@ export default function AnalysisResult({ result, isAnalyzing }) {
               <div className="sq-result__target-crosshair-h" />
               <div className="sq-result__target-crosshair-v" />
             </div>
-            <p className="sq-result__empty-title">Your analysis result will appear here</p>
+            <p className="sq-result__empty-title">Your intelligence report will appear here.</p>
             <p className="sq-result__empty-hint">
-              Upload an image and ask a question to get<br />started with satellite image analysis.
+              Upload imagery and run an analysis to generate<br />evidence-backed insights.
             </p>
           </div>
         ) : (
           <div className="sq-result__data" aria-label="Analysis results">
-            <div className="sq-result__confidence-row">
-              <div className="sq-result__confidence-meter">
-                <div className="sq-result__confidence-label">
-                  Confidence Score
-                </div>
+            {/* Large confidence number */}
+            <div className="sq-result__confidence-hero">
+              <span className="sq-result__confidence-number">{result.confidence.toFixed(1)}%</span>
+              <div className="sq-result__confidence-meta">
+                <span className="sq-result__confidence-label">CONFIDENCE</span>
                 <div className="sq-result__confidence-bar-wrap">
                   <div
                     className="sq-result__confidence-bar"
@@ -66,12 +66,11 @@ export default function AnalysisResult({ result, isAnalyzing }) {
                     aria-label={`Confidence: ${result.confidence.toFixed(1)}%`}
                   />
                 </div>
-                <span className="sq-result__confidence-value">{result.confidence.toFixed(1)}%</span>
               </div>
             </div>
 
             <div className="sq-result__meta-row">
-              <MetaChip label="Processing Time" value={result.processingTime} />
+              <MetaChip label="Processing" value={result.processingTime} />
               <MetaChip label="Analysis Type" value={result.analysisType} highlight />
             </div>
 

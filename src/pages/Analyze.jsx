@@ -9,7 +9,7 @@ import ExampleQueries from '../components/analysis/ExampleQueries';
 import './Analyze.css';
 
 /**
- * Analyze — AI Intelligence Workspace (three-column layout)
+ * Analyze — Earth Intelligence Workspace (three-column layout)
  * Communicates ASK → ANALYZE → UNDERSTAND → ACT
  */
 export default function Analyze() {
@@ -42,9 +42,12 @@ export default function Analyze() {
 
   return (
     <div className="analyze-page">
-      {/* Workspace header with ASK→ACT flow indicator */}
+      {/* Workspace header */}
       <div className="analyze-page__header">
-        <span className="analyze-page__title">Intelligence Workspace</span>
+        <div className="analyze-page__header-left">
+          <span className="analyze-page__title">Earth Intelligence Workspace</span>
+          <span className="analyze-page__title-sub">Analyze satellite imagery with natural language.</span>
+        </div>
         <div className="analyze-page__flow" aria-label="Workflow progress">
           {flowSteps.map((step, i) => (
             <React.Fragment key={step.label}>
@@ -86,6 +89,7 @@ export default function Analyze() {
             secondImage={secondImage}
             twoImageMode={twoImageMode}
             isAnalyzing={isAnalyzing}
+            analysisResult={analysisResult}
           />
         </div>
 

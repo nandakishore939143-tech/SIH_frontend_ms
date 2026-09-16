@@ -82,14 +82,14 @@ export default function QueryPanel({
       {/* Header */}
       <div className="sq-query-panel__header">
         <div className="sq-query-panel__header-badge">
-          <Sparkles size={11} />
+          <Sparkles size={10} />
           AI Analysis
         </div>
         <h1 className="sq-query-panel__heading">
-          Ask <span className="text-green">SatQuery</span>
+          Ask <span className="text-blue">SatQuery</span>
         </h1>
         <p className="sq-query-panel__subtitle">
-          Type a question in plain language. Upload a satellite image. Get structured intelligence.
+          Ask a question about your satellite imagery. SatQuery AI turns visual data into structured intelligence.
         </p>
       </div>
 
@@ -103,7 +103,7 @@ export default function QueryPanel({
             onClick={() => setShowExamples((v) => !v)}
             aria-expanded={showExamples}
           >
-            <Sparkles size={11} />
+            <Sparkles size={10} />
             Examples
           </button>
         </div>
@@ -129,7 +129,7 @@ export default function QueryPanel({
           <textarea
             id="query-textarea"
             className="sq-query-panel__textarea"
-            placeholder="e.g. &quot;How many buildings are visible and what is the vegetation coverage?&quot;"
+            placeholder={`Ask a question about the satellite image...\ne.g. "How many buildings are visible in this area?"`}
             value={query}
             onChange={handleQueryChange}
             rows={4}
