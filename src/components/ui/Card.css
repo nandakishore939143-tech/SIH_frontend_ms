@@ -1,0 +1,26 @@
+/* Card — Dark panel with blue glow variant */
+.sq-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  position: relative;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.sq-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(77,141,255,0.03) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.sq-card--glow {
+  box-shadow: 0 0 0 1px var(--border), var(--shadow-blue);
+}
+
+.sq-card--glow:hover {
+  border-color: rgba(77,141,255,0.28);
+  box-shadow: 0 0 0 1px rgba(77,141,255,0.28), var(--shadow-blue-strong);
+}

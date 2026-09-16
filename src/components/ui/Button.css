@@ -1,0 +1,141 @@
+/* ══════════════════════════════════════════════
+   Button — Dark Space Intelligence
+   Primary: satellite blue
+   ══════════════════════════════════════════════ */
+
+.sq-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: var(--font-main);
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+  position: relative;
+  letter-spacing: 0.02em;
+  outline: none;
+  text-decoration: none;
+}
+
+.sq-btn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* Sizes */
+.sq-btn--sm  { height: 30px; padding: 0 12px; font-size: 12px; border-radius: 7px; gap: 4px; }
+.sq-btn--md  { height: 36px; padding: 0 16px; font-size: 13px; }
+.sq-btn--lg  { height: 42px; padding: 0 22px; font-size: 13px; font-weight: 700; border-radius: 11px; }
+.sq-btn--xl  { height: 50px; padding: 0 26px; font-size: 13px; font-weight: 800; border-radius: 11px; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* ── Primary ── */
+.sq-btn--primary {
+  background: var(--blue);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(77,141,255,0.30);
+}
+.sq-btn--primary:hover:not(:disabled) {
+  background: var(--blue-bright);
+  box-shadow: 0 6px 32px rgba(77,141,255,0.50);
+  transform: translateY(-1px);
+}
+.sq-btn--primary:active:not(:disabled) { transform: translateY(0); }
+
+/* ── Secondary ── */
+.sq-btn--secondary {
+  background: var(--bg-raised);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.sq-btn--secondary:hover:not(:disabled) {
+  background: rgba(77,141,255,0.04);
+  border-color: rgba(77,141,255,0.30);
+  color: var(--text-main);
+}
+
+/* ── Ghost ── */
+.sq-btn--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+}
+.sq-btn--ghost:hover:not(:disabled) {
+  background: rgba(77,141,255,0.06);
+  color: var(--blue-bright);
+  border-color: rgba(77,141,255,0.18);
+}
+
+/* ── Outline ── */
+.sq-btn--outline {
+  background: transparent;
+  color: var(--blue);
+  border: 1px solid var(--blue);
+}
+.sq-btn--outline:hover:not(:disabled) {
+  background: rgba(77,141,255,0.08);
+  box-shadow: 0 0 14px rgba(77,141,255,0.15);
+}
+
+/* ── Danger ── */
+.sq-btn--danger {
+  background: var(--danger-dim);
+  color: var(--danger);
+  border: 1px solid rgba(255,77,109,0.3);
+}
+.sq-btn--danger:hover:not(:disabled) { background: rgba(255,77,109,0.2); }
+
+/* ── Analyze — primary hero CTA ── */
+.sq-btn--analyze {
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dim) 100%);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  border-radius: 11px;
+  box-shadow: 0 4px 24px rgba(77,141,255,0.35), 0 0 0 1px rgba(77,141,255,0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.sq-btn--analyze::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  transition: left 0.5s ease;
+}
+
+.sq-btn--analyze:hover:not(:disabled)::before { left: 100%; }
+
+.sq-btn--analyze:hover:not(:disabled) {
+  box-shadow: 0 8px 40px rgba(77,141,255,0.55), 0 0 0 1px rgba(107,163,255,0.3);
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, var(--blue-bright) 0%, var(--blue) 100%);
+}
+
+.sq-btn--analyze:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 12px rgba(77,141,255,0.25);
+}
+
+/* Disabled */
+.sq-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+.sq-btn--loading { cursor: wait; }
+
+.sq-btn__spinner {
+  width: 13px; height: 13px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: sq-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes sq-spin { to { transform: rotate(360deg); } }
+
+.sq-btn__icon { display: inline-flex; align-items: center; flex-shrink: 0; }
+.sq-btn__label { display: inline-flex; align-items: center; gap: 7px; }

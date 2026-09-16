@@ -1,0 +1,108 @@
+.sq-model-info {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.sq-model-info__header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sq-model-info__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.sq-model-info__icon {
+  display: inline-flex;
+  color: var(--blue-primary);
+}
+
+.sq-model-info__body {
+  padding: 12px 16px;
+}
+
+.sq-model-info__empty {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  text-align: center;
+  padding: 4px 0;
+}
+
+/* Loading skeleton */
+
+.sq-model-info__skeleton-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sq-model-info__skeleton-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.sq-model-info__skeleton {
+  height: 10px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-tertiary) 50%, var(--bg-secondary) 75%);
+  background-size: 200% 100%;
+  animation: sq-shimmer 1.5s infinite;
+}
+
+.sq-model-info__skeleton--label { width: 40%; }
+.sq-model-info__skeleton--value { width: 30%; }
+
+/* Grid */
+.sq-model-info__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sq-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+}
+
+.sq-info-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.sq-info-row__label {
+  font-size: 12px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.sq-info-row__value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.sq-info-row--accent .sq-info-row__value {
+  color: var(--blue-bright);
+}
+
+.sq-info-row--highlight .sq-info-row__value {
+  color: var(--success);
+  font-weight: 700;
+}
