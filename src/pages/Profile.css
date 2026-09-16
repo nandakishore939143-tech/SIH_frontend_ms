@@ -1,0 +1,748 @@
+/* =========================================================
+   SATQUERY AI — PROFILE PAGE
+   ========================================================= */
+
+.profile-page {
+  width: 100%;
+  min-height: 100%;
+
+  padding: 48px 6vw 80px;
+
+  background: var(--bg-base);
+
+  color: #eef7fb;
+}
+
+.profile-container {
+  width: 100%;
+  max-width: 920px;
+
+  margin: 0 auto;
+}
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.profile-back {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  margin-bottom: 28px;
+  padding: 7px 0;
+
+  border: none;
+  background: transparent;
+
+  color: rgba(170, 200, 215, 0.65);
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.profile-back:hover {
+  color: #ffffff;
+  transform: translateX(-2px);
+}
+
+/* =========================================================
+   PROFILE HEADER
+   ========================================================= */
+
+.profile-header {
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+
+  margin-bottom: 30px;
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border: 1px solid rgba(120, 190, 220, 0.3);
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(80, 160, 200, 0.2),
+      rgba(40, 80, 110, 0.12)
+    );
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  color: #dff5ff;
+
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.profile-header h1 {
+  margin: 0 0 5px;
+
+  color: #f2f8fb;
+
+  font-size: 25px;
+  font-weight: 650;
+
+  letter-spacing: -0.5px;
+}
+
+.profile-header p {
+  margin: 0;
+
+  color: rgba(175, 200, 212, 0.58);
+
+  font-size: 13px;
+}
+
+/* =========================================================
+   PROFILE CARD
+   ========================================================= */
+
+.profile-card {
+  padding: 30px;
+
+  border: 1px solid rgba(130, 170, 190, 0.13);
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(18, 31, 41, 0.82),
+      rgba(9, 18, 26, 0.88)
+    );
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+
+  backdrop-filter: blur(18px);
+}
+
+/* =========================================================
+   CARD HEADER
+   ========================================================= */
+
+.profile-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.profile-card-header h2 {
+  margin: 0 0 5px;
+
+  color: #edf7fb;
+
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.profile-card-header p {
+  margin: 0;
+
+  color: rgba(170, 195, 208, 0.55);
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.profile-card-header > svg {
+  flex-shrink: 0;
+
+  color: rgba(120, 190, 220, 0.65);
+}
+
+/* =========================================================
+   ACCOUNT DETAILS
+   ========================================================= */
+
+.profile-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 14px;
+
+  margin-top: 25px;
+}
+
+.profile-detail {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 11px;
+
+  min-width: 0;
+
+  padding: 15px;
+
+  border: 1px solid rgba(130, 170, 190, 0.09);
+  border-radius: 12px;
+
+  background: rgba(8, 17, 24, 0.45);
+}
+
+.profile-detail-icon {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 8px;
+
+  background: rgba(80, 160, 200, 0.09);
+
+  color: rgba(135, 195, 220, 0.75);
+}
+
+.profile-detail > div:last-child {
+  min-width: 0;
+}
+
+.profile-detail span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: rgba(165, 195, 208, 0.5);
+
+  font-size: 10px;
+  font-weight: 600;
+
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.profile-detail strong {
+  display: block;
+
+  overflow: hidden;
+
+  color: rgba(225, 240, 246, 0.88);
+
+  font-size: 12px;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.profile-divider {
+  width: 100%;
+  height: 1px;
+
+  margin: 28px 0;
+
+  background: rgba(130, 170, 190, 0.1);
+}
+
+/* =========================================================
+   SECURITY SUMMARY
+   ========================================================= */
+
+.profile-security-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-top: 22px;
+
+  padding: 16px;
+
+  border: 1px solid rgba(130, 170, 190, 0.09);
+  border-radius: 12px;
+
+  background: rgba(8, 17, 24, 0.45);
+}
+
+.profile-security-info {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+}
+
+.profile-security-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 9px;
+
+  background: rgba(80, 160, 200, 0.09);
+
+  color: rgba(135, 195, 220, 0.75);
+}
+
+.profile-security-info span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: rgba(165, 195, 208, 0.5);
+
+  font-size: 10px;
+  font-weight: 600;
+
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.profile-security-info strong {
+  display: block;
+
+  color: rgba(225, 240, 246, 0.85);
+
+  font-size: 13px;
+
+  letter-spacing: 2px;
+}
+
+/* =========================================================
+   CHANGE PASSWORD BUTTON
+   ========================================================= */
+
+.profile-change-password {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+
+  padding: 10px 15px;
+
+  border: 1px solid rgba(110, 185, 220, 0.22);
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(70, 150, 190, 0.15),
+      rgba(50, 110, 150, 0.09)
+    );
+
+  color: #dceff7;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.profile-change-password:hover {
+  border-color: rgba(120, 195, 230, 0.4);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(70, 150, 190, 0.23),
+      rgba(50, 110, 150, 0.14)
+    );
+
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   PASSWORD FORM
+   ========================================================= */
+
+.profile-password-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 17px;
+
+  margin-top: 22px;
+
+  padding: 20px;
+
+  border: 1px solid rgba(130, 170, 190, 0.1);
+  border-radius: 13px;
+
+  background: rgba(6, 14, 20, 0.35);
+}
+
+.profile-password-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.profile-password-field label {
+  color: rgba(205, 225, 235, 0.72);
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   PASSWORD INPUT
+   ========================================================= */
+
+.profile-password-input {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  min-height: 45px;
+
+  gap: 10px;
+
+  padding: 0 12px;
+
+  border: 1px solid rgba(130, 170, 190, 0.14);
+  border-radius: 10px;
+
+  background: rgba(7, 16, 23, 0.55);
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.profile-password-input:hover {
+  border-color: rgba(130, 180, 205, 0.22);
+}
+
+.profile-password-input:focus-within {
+  border-color: rgba(110, 190, 225, 0.4);
+
+  background: rgba(10, 21, 29, 0.75);
+
+  box-shadow:
+    0 0 0 3px rgba(80, 170, 210, 0.06);
+}
+
+.profile-password-input > svg {
+  flex-shrink: 0;
+
+  color: rgba(150, 190, 205, 0.48);
+}
+
+.profile-password-input input {
+  flex: 1;
+
+  width: 100%;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #edf7fb;
+
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.profile-password-input input::placeholder {
+  color: rgba(155, 185, 200, 0.35);
+}
+
+.profile-password-input button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 4px;
+
+  border: none;
+  background: transparent;
+
+  color: rgba(155, 190, 205, 0.5);
+
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.profile-password-input button:hover {
+  color: #ffffff;
+}
+
+/* =========================================================
+   PASSWORD MESSAGES
+   ========================================================= */
+
+.profile-password-error,
+.profile-password-success {
+  margin: 0;
+
+  padding: 11px 13px;
+
+  border-radius: 8px;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.profile-password-error {
+  border: 1px solid rgba(235, 100, 100, 0.15);
+
+  background: rgba(190, 60, 60, 0.07);
+
+  color: #f0a0a0;
+}
+
+.profile-password-success {
+  border: 1px solid rgba(80, 200, 140, 0.15);
+
+  background: rgba(60, 180, 120, 0.07);
+
+  color: #8de0b1;
+}
+
+/* =========================================================
+   PASSWORD ACTIONS
+   ========================================================= */
+
+.profile-password-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 2px;
+}
+
+.profile-update-password,
+.profile-cancel-password {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 10px 16px;
+
+  border-radius: 9px;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.profile-update-password {
+  border: 1px solid rgba(110, 185, 220, 0.25);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(70, 150, 190, 0.18),
+      rgba(50, 110, 150, 0.1)
+    );
+
+  color: #dceff7;
+}
+
+.profile-update-password:hover:not(:disabled) {
+  border-color: rgba(120, 195, 230, 0.42);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(70, 150, 190, 0.27),
+      rgba(50, 110, 150, 0.15)
+    );
+
+  transform: translateY(-1px);
+}
+
+.profile-cancel-password {
+  border: 1px solid rgba(130, 170, 190, 0.12);
+
+  background: rgba(120, 150, 165, 0.05);
+
+  color: rgba(190, 210, 220, 0.65);
+}
+
+.profile-cancel-password:hover:not(:disabled) {
+  border-color: rgba(160, 190, 205, 0.25);
+
+  background: rgba(130, 160, 175, 0.09);
+
+  color: #e5f0f4;
+}
+
+.profile-update-password:disabled,
+.profile-cancel-password:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   SIGN OUT
+   ========================================================= */
+
+.profile-signout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 10px 16px;
+
+  border: 1px solid rgba(220, 100, 100, 0.14);
+  border-radius: 9px;
+
+  background: rgba(180, 60, 60, 0.06);
+
+  color: rgba(235, 150, 150, 0.78);
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.profile-signout:hover {
+  border-color: rgba(220, 100, 100, 0.3);
+
+  background: rgba(190, 60, 60, 0.11);
+
+  color: #f2aaaa;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 800px) {
+  .profile-page {
+    padding: 36px 28px 60px;
+  }
+
+  .profile-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 560px) {
+  .profile-page {
+    padding: 28px 18px 50px;
+  }
+
+  .profile-card {
+    padding: 21px;
+    border-radius: 14px;
+  }
+
+  .profile-header {
+    gap: 13px;
+    margin-bottom: 22px;
+  }
+
+  .profile-avatar {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 14px;
+
+    font-size: 20px;
+  }
+
+  .profile-header h1 {
+    font-size: 20px;
+  }
+
+  .profile-header p {
+    font-size: 11px;
+  }
+
+  .profile-security-summary {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .profile-change-password {
+    width: 100%;
+  }
+
+  .profile-password-form {
+    padding: 15px;
+  }
+
+  .profile-password-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .profile-update-password,
+  .profile-cancel-password {
+    width: 100%;
+  }
+
+  .profile-signout {
+    width: 100%;
+  }
+}

@@ -1,4 +1,6 @@
-/* App Shell Layout */
+/* =========================================================
+   SATQUERY AI — APP SHELL
+   ========================================================= */
 
 .app-shell {
   min-height: 100vh;
@@ -8,21 +10,76 @@
   z-index: 1;
 }
 
-/* Body = sidebar + main content side-by-side */
+/* =========================================================
+   MAIN APP BODY
+   Full-width layout without sidebar
+   ========================================================= */
+
 .app-body {
   display: flex;
   flex: 1;
-  overflow: hidden;
+  width: 100%;
   min-height: calc(100vh - var(--header-height));
+  overflow: hidden;
 }
 
-/* Scrollable main content area */
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
 .app-main {
+  width: 100%;
   flex: 1;
+
   display: flex;
   flex-direction: column;
+
+  position: relative;
+
   overflow-y: auto;
   overflow-x: hidden;
-  position: relative;
+
   background: var(--bg-base);
+}
+
+/* =========================================================
+   OPTIONAL: CUSTOM SCROLLBAR
+   ========================================================= */
+
+.app-main::-webkit-scrollbar {
+  width: 7px;
+}
+
+.app-main::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-main::-webkit-scrollbar-thumb {
+  background: rgba(120, 170, 200, 0.18);
+  border-radius: 10px;
+}
+
+.app-main::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 170, 200, 0.30);
+}
+
+/* Firefox */
+
+.app-main {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 170, 200, 0.18) transparent;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .app-body {
+    min-height: calc(100vh - var(--header-height));
+  }
+
+  .app-main {
+    width: 100%;
+  }
 }

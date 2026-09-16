@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useAuth } from '../../auth/AuthContext';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Search, Bell, ChevronDown, Menu, X, Satellite, User, LogOut } from 'lucide-react';
 import './Header.css';
 
@@ -65,6 +66,19 @@ function useOutsideClick(ref, handler) {
 }
 
 export default function Header() {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+
+    if (error) {
+      console.error('Sign out failed:', error.message);
+      return;
+    }
+
+    setProfileOpen(false);
+    navigate('/login');
+  };
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   /* Search */
@@ -292,7 +306,9 @@ export default function Header() {
               id="header-user-btn"
               onClick={() => { setSearchOpen(false); setNotifOpen(false); setProfileOpen((v) => !v); }}
             >
-              <div className="sq-header__avatar" aria-hidden="true">M</div>
+              <div className="sq-header__avatar" aria-hidden="true">
+                {(user?.email?.[0] || 'U').toUpperCase()}
+              </div>
               <ChevronDown size={12} className="sq-header__chevron" aria-hidden="true" />
             </button>
 
@@ -301,8 +317,13 @@ export default function Header() {
                 <div className="sq-header__profile-info">
                   <div className="sq-header__profile-avatar" aria-hidden="true">M</div>
                   <div>
-                    <p className="sq-header__profile-name">Midnight Syntax</p>
-                    <p className="sq-header__profile-email">user@satquery.ai</p>
+                    <p className="sq-header__profile-name">
+                      {user?.user_metadata?.full_name || 'SatQuery User'}
+                    </p>
+
+                    <p className="sq-header__profile-email">
+                      {user?.email}
+                    </p>
                   </div>
                 </div>
                 <div className="sq-header__profile-divider" />
@@ -310,7 +331,10 @@ export default function Header() {
                   className="sq-header__profile-item"
                   type="button"
                   id="profile-menu-profile"
-                  onClick={() => setProfileOpen(false)}
+                  onClick={() => {
+                    setProfileOpen(false);
+                    navigate('/profile');
+                  }}
                 >
                   <User size={14} aria-hidden="true" />
                   Profile
@@ -319,7 +343,7 @@ export default function Header() {
                   className="sq-header__profile-item sq-header__profile-item--danger"
                   type="button"
                   id="profile-menu-signout"
-                  onClick={() => setProfileOpen(false)}
+                  onClick={handleSignOut}
                 >
                   <LogOut size={14} aria-hidden="true" />
                   Sign Out

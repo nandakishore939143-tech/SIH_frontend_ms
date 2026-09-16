@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
-  Plus, LayoutDashboard, Clock, Lightbulb, ChevronRight
+  Plus, LayoutDashboard, Clock, Lightbulb, ChevronRight, ChevronLeft
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -63,15 +63,15 @@ export default function Sidebar({ onNewAnalysis }) {
           className="sq-sidebar__collapse-btn"
           onClick={() => setCollapsed((v) => !v)}
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           id="sidebar-collapse-btn"
-        >
-          <ChevronRight
-            size={14}
-            aria-hidden="true"
-            style={{ transform: collapsed ? 'rotate(0deg)' : 'rotate(180deg)', transition: 'transform 0.2s' }}
-          />
+          >
+          {collapsed ? (
+            <ChevronRight size={14} aria-hidden="true" />
+          ) : (
+            <ChevronLeft size={14} aria-hidden="true" />
+          )}
         </button>
-
         {/* Bottom tagline */}
         {!collapsed && (
           <div className="sq-sidebar__tagline" aria-hidden="true">
