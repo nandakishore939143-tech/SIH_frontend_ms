@@ -1,242 +1,1066 @@
-import React, { useState, lazy, Suspense } from 'react';
-import { ZoomIn, ZoomOut, Maximize2, RotateCcw, Layers, Columns } from 'lucide-react';
+import React, {
+  useState,
+  lazy,
+  Suspense,
+  useEffect,
+} from 'react';
+
+import {
+  ZoomIn,
+  ZoomOut,
+  Maximize2,
+  RotateCcw,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Layers,
+  Columns,
+} from 'lucide-react';
+
 import './ImagePreview.css';
 
-/* Lazy-load the 3D scanner so it only loads when the Analyze page is opened */
-const AnalysisScanner = lazy(() => import('../3d/AnalysisScanner'));
 
-/* Detection overlay labels shown when analysis is complete */
+const AnalysisScanner = lazy(
+  () => import('../3d/AnalysisScanner')
+);
+
+
 const DETECTION_OVERLAYS = [
-  { label: 'BUILDINGS', conf: '94%', top: '22%', left: '18%' },
-  { label: 'WATER',     conf: '91%', top: '58%', left: '62%' },
-  { label: 'VEGETATION', conf: '87%', top: '38%', left: '72%' },
+  {
+    label: 'BUILDINGS',
+    conf: '94%',
+    top: '22%',
+    left: '18%',
+  },
+  {
+    label: 'WATER',
+    conf: '91%',
+    top: '58%',
+    left: '62%',
+  },
+  {
+    label: 'VEGETATION',
+    conf: '87%',
+    top: '38%',
+    left: '72%',
+  },
 ];
 
-/**
- * ImagePreview — Shows uploaded image with zoom controls, comparison mode for two images,
- * and subtle AI detection overlays when analysis is complete.
- */
-export default function ImagePreview({ image, secondImage, twoImageMode, isAnalyzing, analysisResult }) {
-  const [zoom, setZoom] = useState(1);
-  const [compareMode, setCompareMode] = useState('sideBySide'); // 'sideBySide' | 'overlay'
-  const [overlayOpacity, setOverlayOpacity] = useState(0.5);
-  const [fullscreen, setFullscreen] = useState(false);
 
-  const handleZoomIn = () => setZoom((z) => Math.min(z + 0.25, 4));
-  const handleZoomOut = () => setZoom((z) => Math.max(z - 0.25, 0.25));
-  const handleReset = () => setZoom(1);
-  const handleFullscreen = () => setFullscreen((v) => !v);
+export default function ImagePreview({
+  images,
+  activeImageIndex,
+  onActiveImageChange,
+  twoImageMode,
+  isAnalyzing,
+  analysisResult,
+}) {
 
-  const hasImage = !!image;
-  const hasBothImages = hasImage && !!secondImage && twoImageMode;
-  const showDetections = hasImage && !!analysisResult && !isAnalyzing;
+  const [zoom, setZoom] =
+    useState(1);
 
-  /* Dynamic status label */
-  const statusLabel = isAnalyzing
-    ? 'ANALYZING'
-    : analysisResult
-      ? 'COMPLETE'
-      : hasImage
-        ? 'READY'
-        : 'AWAITING IMAGE';
+  const [fullscreen, setFullscreen] =
+    useState(false);
+
+  const [compareMode, setCompareMode] =
+    useState('sideBySide');
+
+  const [overlayOpacity, setOverlayOpacity] =
+    useState(0.5);
+
+
+  /* =====================================================
+     CURRENT IMAGE
+     ===================================================== */
+
+  const currentImage =
+    images[activeImageIndex];
+
+
+  const hasImages =
+    images.length > 0;
+
+
+  const hasMultipleImages =
+    images.length > 1;
+
+
+  const showDetections =
+    hasImages &&
+    !!analysisResult &&
+    !isAnalyzing;
+
+
+  /* =====================================================
+     LOOPING NAVIGATION
+     ===================================================== */
+
+  const goNext = () => {
+
+    if (!images.length) return;
+
+    const nextIndex =
+      (activeImageIndex + 1) %
+      images.length;
+
+    onActiveImageChange(nextIndex);
+
+    /*
+      Reset zoom when switching images.
+    */
+
+    setZoom(1);
+  };
+
+
+  const goPrevious = () => {
+
+    if (!images.length) return;
+
+    const previousIndex =
+      (activeImageIndex - 1 + images.length) %
+      images.length;
+
+    onActiveImageChange(previousIndex);
+
+    setZoom(1);
+  };
+
+
+  const selectImage = (index) => {
+
+    onActiveImageChange(index);
+
+    setZoom(1);
+  };
+
+
+  /* =====================================================
+     KEYBOARD NAVIGATION
+     ===================================================== */
+
+  useEffect(() => {
+
+    if (!hasMultipleImages) return;
+
+    const handleKeyDown = (e) => {
+
+      /*
+        Don't hijack keyboard input
+        while typing into inputs.
+      */
+
+      const tag =
+        document.activeElement?.tagName;
+
+      if (
+        tag === 'INPUT' ||
+        tag === 'TEXTAREA'
+      ) {
+        return;
+      }
+
+
+      if (e.key === 'ArrowRight') {
+
+        e.preventDefault();
+
+        goNext();
+      }
+
+
+      if (e.key === 'ArrowLeft') {
+
+        e.preventDefault();
+
+        goPrevious();
+      }
+
+    };
+
+
+    document.addEventListener(
+      'keydown',
+      handleKeyDown
+    );
+
+
+    return () => {
+
+      document.removeEventListener(
+        'keydown',
+        handleKeyDown
+      );
+
+    };
+
+  }, [
+    hasMultipleImages,
+    activeImageIndex,
+    images.length,
+  ]);
+
+
+  /* =====================================================
+     ZOOM
+     ===================================================== */
+
+  const handleZoomIn = () => {
+
+    setZoom((value) =>
+      Math.min(
+        value + 0.25,
+        4
+      )
+    );
+  };
+
+
+  const handleZoomOut = () => {
+
+    setZoom((value) =>
+      Math.max(
+        value - 0.25,
+        0.25
+      )
+    );
+  };
+
+
+  const handleReset = () => {
+
+    setZoom(1);
+  };
+
+
+  /* =====================================================
+     FULLSCREEN
+     ===================================================== */
+
+  const openFullscreen = () => {
+
+    if (!currentImage) return;
+
+    setFullscreen(true);
+  };
+
+
+  const closeFullscreen = () => {
+
+    setFullscreen(false);
+  };
+
+
+  useEffect(() => {
+
+    if (!fullscreen) return;
+
+
+    const handleEscape = (e) => {
+
+      if (e.key === 'Escape') {
+
+        setFullscreen(false);
+      }
+
+    };
+
+
+    document.addEventListener(
+      'keydown',
+      handleEscape
+    );
+
+
+    document.body.style.overflow =
+      'hidden';
+
+
+    return () => {
+
+      document.removeEventListener(
+        'keydown',
+        handleEscape
+      );
+
+      document.body.style.overflow =
+        '';
+
+    };
+
+  }, [fullscreen]);
+
+
+  /* =====================================================
+     STATUS
+     ===================================================== */
+
+  const statusLabel =
+    isAnalyzing
+      ? 'ANALYZING'
+      : analysisResult
+        ? 'COMPLETE'
+        : hasImages
+          ? 'READY'
+          : 'AWAITING IMAGE';
+
+
+  /* =====================================================
+     NO IMAGE
+     ===================================================== */
+
+  if (!hasImages) {
+
+    return (
+      <div className="sq-preview">
+
+        <div className="sq-preview__header">
+
+          <div className="sq-preview__title-row">
+
+            <h2 className="sq-preview__title">
+              Satellite View
+            </h2>
+
+            <span className="sq-preview__status sq-preview__status--ready">
+
+              <span className="sq-preview__status-dot" />
+
+              AWAITING IMAGE
+
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div className="sq-preview__canvas">
+
+          <Suspense
+            fallback={
+              <div className="sq-preview__placeholder">
+
+                <div className="sq-preview__placeholder-icon">
+
+                  <div className="sq-preview__radar" />
+
+                  <div className="sq-preview__radar sq-preview__radar--2" />
+
+                  <div className="sq-preview__radar sq-preview__radar--3" />
+
+                </div>
+
+                <p className="sq-preview__placeholder-title">
+                  Upload Satellite Imagery
+                </p>
+
+                <p className="sq-preview__placeholder-hint">
+                  Upload one or more images to begin.
+                </p>
+
+              </div>
+            }
+          >
+
+            <AnalysisScanner />
+
+          </Suspense>
+
+        </div>
+
+      </div>
+    );
+  }
+
+
+  /* =====================================================
+     SECOND IMAGE FOR COMPARISON
+     ===================================================== */
+
+  const comparisonImage =
+    twoImageMode && images.length > 1
+      ? images[
+          (activeImageIndex + 1) %
+          images.length
+        ]
+      : null;
+
 
   return (
-    <div className={`sq-preview ${fullscreen ? 'sq-preview--fullscreen' : ''}`}>
-      <div className="sq-preview__header">
-        <div className="sq-preview__title-row">
-          <h2 className="sq-preview__title">
-            Satellite View
-          </h2>
-          <span className={`sq-preview__status sq-preview__status--${isAnalyzing ? 'analyzing' : analysisResult ? 'complete' : 'ready'}`}>
-            <span className="sq-preview__status-dot" aria-hidden="true" />
-            {statusLabel}
-          </span>
-        </div>
+    <>
 
-        <div className="sq-preview__controls">
-          {hasImage && (
-            <>
-              <button
-                type="button"
-                className="sq-preview__ctrl-btn"
-                onClick={handleZoomIn}
-                aria-label="Zoom in"
-                title="Zoom in"
-                disabled={zoom >= 4}
-                id="preview-zoom-in"
-              >
-                <ZoomIn size={14} />
-              </button>
-              <button
-                type="button"
-                className="sq-preview__ctrl-btn"
-                onClick={handleZoomOut}
-                aria-label="Zoom out"
-                title="Zoom out"
-                disabled={zoom <= 0.25}
-                id="preview-zoom-out"
-              >
-                <ZoomOut size={14} />
-              </button>
-              <button
-                type="button"
-                className="sq-preview__ctrl-btn"
-                onClick={handleReset}
-                aria-label="Reset zoom"
-                title="Reset"
-                id="preview-reset"
-              >
-                <RotateCcw size={14} />
-              </button>
-            </>
-          )}
-          <button
-            type="button"
-            className="sq-preview__ctrl-btn"
-            onClick={handleFullscreen}
-            aria-label={fullscreen ? 'Exit fullscreen' : 'Fullscreen'}
-            title={fullscreen ? 'Exit fullscreen' : 'Fullscreen'}
-            id="preview-fullscreen"
-          >
-            <Maximize2 size={14} />
-          </button>
-        </div>
-      </div>
+      {/* =================================================
+          NORMAL VIEW
+          ================================================= */}
 
-      {/* Comparison mode selector */}
-      {hasBothImages && (
-        <div className="sq-preview__compare-bar">
-          <button
-            type="button"
-            className={`sq-preview__compare-btn ${compareMode === 'sideBySide' ? 'sq-preview__compare-btn--active' : ''}`}
-            onClick={() => setCompareMode('sideBySide')}
-            id="compare-side-by-side"
-          >
-            <Columns size={13} /> Side by Side
-          </button>
-          <button
-            type="button"
-            className={`sq-preview__compare-btn ${compareMode === 'overlay' ? 'sq-preview__compare-btn--active' : ''}`}
-            onClick={() => setCompareMode('overlay')}
-            id="compare-overlay"
-          >
-            <Layers size={13} /> Overlay
-          </button>
-        </div>
-      )}
+      <div className="sq-preview">
 
-      {/* Canvas */}
-      <div className="sq-preview__canvas">
-        {!hasImage ? (
-          <Suspense fallback={
-            <div className="sq-preview__placeholder" aria-label="No image uploaded">
-              <div className="sq-preview__placeholder-icon" aria-hidden="true">
-                <div className="sq-preview__radar" />
-                <div className="sq-preview__radar sq-preview__radar--2" />
-                <div className="sq-preview__radar sq-preview__radar--3" />
-              </div>
-              <p className="sq-preview__placeholder-title">Upload Satellite Imagery</p>
-              <p className="sq-preview__placeholder-hint">
-                Drop an image here or choose a file to begin.
-              </p>
-            </div>
-          }>
-            <AnalysisScanner />
-          </Suspense>
-        ) : hasBothImages && compareMode === 'sideBySide' ? (
-          <div className="sq-preview__side-by-side">
-            <div className="sq-preview__side">
-              <span className="sq-preview__side-label">Image 1 — Before</span>
-              <div className="sq-preview__img-wrap" style={{ '--zoom': zoom }}>
-                <img src={image.url} alt="First uploaded satellite image" className="sq-preview__img" />
-              </div>
-            </div>
-            <div className="sq-preview__divider-line" aria-hidden="true" />
-            <div className="sq-preview__side">
-              <span className="sq-preview__side-label">Image 2 — After</span>
-              <div className="sq-preview__img-wrap" style={{ '--zoom': zoom }}>
-                <img src={secondImage.url} alt="Second uploaded satellite image" className="sq-preview__img" />
-              </div>
-            </div>
-          </div>
-        ) : hasBothImages && compareMode === 'overlay' ? (
-          <div className="sq-preview__overlay-wrap" style={{ '--zoom': zoom }}>
-            <img src={image.url} alt="First satellite image (overlay base)" className="sq-preview__img sq-preview__img--base" />
-            <img
-              src={secondImage.url}
-              alt="Second satellite image (overlay)"
-              className="sq-preview__img sq-preview__img--overlay"
-              style={{ opacity: overlayOpacity }}
-            />
-            <div className="sq-preview__opacity-ctrl">
-              <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>Opacity</span>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                value={overlayOpacity}
-                onChange={(e) => setOverlayOpacity(Number(e.target.value))}
-                aria-label="Overlay opacity"
-                className="sq-preview__slider"
-              />
-              <span style={{ fontSize: 10, color: 'var(--text-muted)', minWidth: 30 }}>
-                {Math.round(overlayOpacity * 100)}%
-              </span>
-            </div>
-          </div>
-        ) : (
-          <div
-            className="sq-preview__img-wrap"
-            style={{ '--zoom': zoom }}
-            aria-label={`Satellite image: ${image.file?.name}`}
-          >
-            <img
-              src={image.url}
-              alt={`Uploaded satellite image: ${image.file?.name}`}
-              className="sq-preview__img"
-            />
 
-            {/* Analyzing overlay */}
-            {isAnalyzing && (
-              <div className="sq-preview__analyzing-overlay" aria-live="polite">
-                <div className="sq-preview__scan-line" aria-hidden="true" />
-                <div className="sq-preview__analyzing-content">
-                  <div className="sq-preview__analyzing-spinner" aria-hidden="true" />
-                  <span className="sq-preview__analyzing-text">Analyzing Satellite Imagery</span>
-                </div>
-              </div>
-            )}
+        {/* =================================================
+            HEADER
+            ================================================= */}
 
-            {/* AI detection overlays when analysis complete */}
-            {showDetections && (
-              <div className="sq-preview__detection-overlay" aria-hidden="true">
-                {DETECTION_OVERLAYS.map((d) => (
-                  <div
-                    key={d.label}
-                    className="sq-preview__detection-label"
-                    style={{ top: d.top, left: d.left }}
-                  >
-                    <span className="sq-preview__detection-name">{d.label}</span>
-                    <span className="sq-preview__detection-conf">{d.conf}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+        <div className="sq-preview__header">
 
-      {hasImage && (
-        <div className="sq-preview__footer">
-          <span className="sq-preview__zoom-label">Zoom: {Math.round(zoom * 100)}%</span>
-          {image.file && (
-            <span className="sq-preview__file-info">
-              {image.file.name} · {(image.file.size / 1024 / 1024).toFixed(2)} MB
+          <div className="sq-preview__title-row">
+
+            <h2 className="sq-preview__title">
+              Satellite View
+            </h2>
+
+
+            <span
+              className={`sq-preview__status ${
+                isAnalyzing
+                  ? 'sq-preview__status--analyzing'
+                  : analysisResult
+                    ? 'sq-preview__status--complete'
+                    : 'sq-preview__status--ready'
+              }`}
+            >
+
+              <span className="sq-preview__status-dot" />
+
+              {statusLabel}
+
             </span>
-          )}
+
+          </div>
+
+
+          {/* CONTROLS */}
+
+          <div className="sq-preview__controls">
+
+            <button
+              type="button"
+              className="sq-preview__ctrl-btn"
+              onClick={handleZoomIn}
+              disabled={zoom >= 4}
+              title="Zoom in"
+              aria-label="Zoom in"
+            >
+              <ZoomIn size={14} />
+            </button>
+
+
+            <button
+              type="button"
+              className="sq-preview__ctrl-btn"
+              onClick={handleZoomOut}
+              disabled={zoom <= 0.25}
+              title="Zoom out"
+              aria-label="Zoom out"
+            >
+              <ZoomOut size={14} />
+            </button>
+
+
+            <button
+              type="button"
+              className="sq-preview__ctrl-btn"
+              onClick={handleReset}
+              title="Reset zoom"
+              aria-label="Reset zoom"
+            >
+              <RotateCcw size={14} />
+            </button>
+
+
+            <button
+              type="button"
+              className="sq-preview__ctrl-btn"
+              onClick={openFullscreen}
+              title="Open fullscreen"
+              aria-label="Open image fullscreen"
+            >
+              <Maximize2 size={14} />
+            </button>
+
+          </div>
+
         </div>
+
+
+        {/* =================================================
+            IMAGE SWITCHER
+            ================================================= */}
+
+        {hasMultipleImages && (
+
+          <div className="sq-preview__image-switcher">
+
+            {/* PREVIOUS */}
+
+            <button
+              type="button"
+              className="sq-preview__nav-btn"
+              onClick={goPrevious}
+              aria-label="Previous image"
+              title="Previous image"
+            >
+
+              <ChevronLeft size={15} />
+
+            </button>
+
+
+            {/* NUMBER BUTTONS */}
+
+            <div className="sq-preview__image-buttons">
+
+              {images.map((_, index) => (
+
+                <button
+                  key={index}
+                  type="button"
+
+                  className={`sq-preview__image-number ${
+                    index === activeImageIndex
+                      ? 'sq-preview__image-number--active'
+                      : ''
+                  }`}
+
+                  onClick={() =>
+                    selectImage(index)
+                  }
+
+                  aria-label={`Show image ${index + 1}`}
+
+                  aria-current={
+                    index === activeImageIndex
+                      ? 'true'
+                      : undefined
+                  }
+
+                  title={`Image ${index + 1}`}
+                >
+
+                  {index + 1}
+
+                </button>
+
+              ))}
+
+            </div>
+
+
+            {/* NEXT */}
+
+            <button
+              type="button"
+              className="sq-preview__nav-btn"
+              onClick={goNext}
+              aria-label="Next image"
+              title="Next image"
+            >
+
+              <ChevronRight size={15} />
+
+            </button>
+
+          </div>
+
+        )}
+
+
+        {/* =================================================
+            IMAGE INFO BAR
+            ================================================= */}
+
+        <div className="sq-preview__image-info">
+
+          <span>
+            Image {activeImageIndex + 1}
+            {' / '}
+            {images.length}
+          </span>
+
+          <span className="sq-preview__image-info-name">
+            {currentImage.file.name}
+          </span>
+
+        </div>
+
+
+        {/* =================================================
+            COMPARISON
+            ================================================= */}
+
+        {twoImageMode &&
+          comparisonImage && (
+
+          <div className="sq-preview__compare-bar">
+
+            <button
+              type="button"
+              className={`sq-preview__compare-btn ${
+                compareMode === 'sideBySide'
+                  ? 'sq-preview__compare-btn--active'
+                  : ''
+              }`}
+              onClick={() =>
+                setCompareMode(
+                  'sideBySide'
+                )
+              }
+            >
+
+              <Columns size={13} />
+
+              Compare
+
+            </button>
+
+
+            <button
+              type="button"
+              className={`sq-preview__compare-btn ${
+                compareMode === 'overlay'
+                  ? 'sq-preview__compare-btn--active'
+                  : ''
+              }`}
+              onClick={() =>
+                setCompareMode(
+                  'overlay'
+                )
+              }
+            >
+
+              <Layers size={13} />
+
+              Overlay
+
+            </button>
+
+          </div>
+
+        )}
+
+
+        {/* =================================================
+            CANVAS
+            ================================================= */}
+
+        <div className="sq-preview__canvas">
+
+          {twoImageMode &&
+          comparisonImage &&
+          compareMode === 'sideBySide' ? (
+
+            <div className="sq-preview__side-by-side">
+
+              <div className="sq-preview__side">
+
+                <span className="sq-preview__side-label">
+                  Image {activeImageIndex + 1}
+                </span>
+
+                <div
+                  className="sq-preview__img-wrap"
+                  style={{
+                    '--zoom': zoom,
+                  }}
+                >
+
+                  <img
+                    src={currentImage.url}
+                    alt={`Satellite image ${
+                      activeImageIndex + 1
+                    }`}
+                    className="sq-preview__img"
+                  />
+
+                </div>
+
+              </div>
+
+
+              <div className="sq-preview__divider-line" />
+
+
+              <div className="sq-preview__side">
+
+                <span className="sq-preview__side-label">
+                  Image {
+                    (
+                      activeImageIndex + 1
+                    ) %
+                    images.length + 1
+                  }
+                </span>
+
+                <div
+                  className="sq-preview__img-wrap"
+                  style={{
+                    '--zoom': zoom,
+                  }}
+                >
+
+                  <img
+                    src={comparisonImage.url}
+                    alt="Comparison satellite image"
+                    className="sq-preview__img"
+                  />
+
+                </div>
+
+              </div>
+
+            </div>
+
+          ) : twoImageMode &&
+            comparisonImage &&
+            compareMode === 'overlay' ? (
+
+            <div
+              className="sq-preview__overlay-wrap"
+              style={{
+                '--zoom': zoom,
+              }}
+            >
+
+              <img
+                src={currentImage.url}
+                alt="Base satellite image"
+                className="sq-preview__img sq-preview__img--base"
+              />
+
+              <img
+                src={comparisonImage.url}
+                alt="Comparison satellite image"
+                className="sq-preview__img sq-preview__img--overlay"
+                style={{
+                  opacity: overlayOpacity,
+                }}
+              />
+
+
+              <div className="sq-preview__opacity-ctrl">
+
+                <span className="sq-preview__opacity-label">
+                  Opacity
+                </span>
+
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={overlayOpacity}
+                  onChange={(e) =>
+                    setOverlayOpacity(
+                      Number(e.target.value)
+                    )
+                  }
+                  className="sq-preview__slider"
+                />
+
+                <span className="sq-preview__opacity-value">
+                  {Math.round(
+                    overlayOpacity * 100
+                  )}%
+                </span>
+
+              </div>
+
+            </div>
+
+          ) : (
+
+            <div
+              className="sq-preview__img-wrap"
+              style={{
+                '--zoom': zoom,
+              }}
+            >
+
+              <img
+                src={currentImage.url}
+                alt={`Uploaded satellite image ${
+                  activeImageIndex + 1
+                }`}
+                className="sq-preview__img"
+              />
+
+
+              {isAnalyzing && (
+
+                <div
+                  className="sq-preview__analyzing-overlay"
+                  aria-live="polite"
+                >
+
+                  <div className="sq-preview__scan-line" />
+
+                  <div className="sq-preview__analyzing-content">
+
+                    <div className="sq-preview__analyzing-spinner" />
+
+                    <span className="sq-preview__analyzing-text">
+                      Analyzing Satellite Imagery
+                    </span>
+
+                  </div>
+
+                </div>
+
+              )}
+
+
+              {showDetections && (
+
+                <div
+                  className="sq-preview__detection-overlay"
+                  aria-hidden="true"
+                >
+
+                  {DETECTION_OVERLAYS.map((d) => (
+
+                    <div
+                      key={d.label}
+                      className="sq-preview__detection-label"
+                      style={{
+                        top: d.top,
+                        left: d.left,
+                      }}
+                    >
+
+                      <span className="sq-preview__detection-name">
+                        {d.label}
+                      </span>
+
+                      <span className="sq-preview__detection-conf">
+                        {d.conf}
+                      </span>
+
+                    </div>
+
+                  ))}
+
+                </div>
+
+              )}
+
+            </div>
+
+          )}
+
+        </div>
+
+
+        {/* =================================================
+            FOOTER
+            ================================================= */}
+
+        <div className="sq-preview__footer">
+
+          <span className="sq-preview__zoom-label">
+            Zoom: {Math.round(zoom * 100)}%
+          </span>
+
+
+          <span className="sq-preview__file-info">
+
+            {currentImage.file.name}
+
+            {' · '}
+
+            {(
+              currentImage.file.size /
+              1024 /
+              1024
+            ).toFixed(2)} MB
+
+          </span>
+
+        </div>
+
+      </div>
+
+
+      {/* =================================================
+          FULLSCREEN
+          ================================================= */}
+
+      {fullscreen && (
+
+        <div
+          className="sq-fullscreen-viewer"
+          role="dialog"
+          aria-modal="true"
+        >
+
+          <div className="sq-fullscreen-viewer__header">
+
+            <div className="sq-fullscreen-viewer__title">
+
+              <span className="sq-fullscreen-viewer__dot" />
+
+              Satellite Image
+
+              <span className="sq-fullscreen-viewer__zoom">
+
+                Image {activeImageIndex + 1}
+                {' / '}
+                {images.length}
+
+                {' · '}
+
+                {Math.round(zoom * 100)}%
+
+              </span>
+
+            </div>
+
+
+            <button
+              type="button"
+              className="sq-fullscreen-viewer__close"
+              onClick={closeFullscreen}
+              title="Close fullscreen"
+              aria-label="Close fullscreen"
+            >
+
+              <X size={20} />
+
+            </button>
+
+          </div>
+
+
+          {/* FULLSCREEN IMAGE SWITCHER */}
+
+          {hasMultipleImages && (
+
+            <div className="sq-fullscreen-viewer__switcher">
+
+              <button
+                type="button"
+                onClick={goPrevious}
+                aria-label="Previous image"
+              >
+
+                <ChevronLeft size={17} />
+
+              </button>
+
+
+              {images.map((_, index) => (
+
+                <button
+                  key={index}
+                  type="button"
+
+                  className={
+                    index === activeImageIndex
+                      ? 'active'
+                      : ''
+                  }
+
+                  onClick={() =>
+                    selectImage(index)
+                  }
+                >
+
+                  {index + 1}
+
+                </button>
+
+              ))}
+
+
+              <button
+                type="button"
+                onClick={goNext}
+                aria-label="Next image"
+              >
+
+                <ChevronRight size={17} />
+
+              </button>
+
+            </div>
+
+          )}
+
+
+          {/* FULLSCREEN CONTROLS */}
+
+          <div className="sq-fullscreen-viewer__controls">
+
+            <button
+              type="button"
+              onClick={handleZoomOut}
+              disabled={zoom <= 0.25}
+              title="Zoom out"
+            >
+              <ZoomOut size={17} />
+            </button>
+
+
+            <button
+              type="button"
+              onClick={handleReset}
+              title="Reset zoom"
+            >
+              <RotateCcw size={16} />
+            </button>
+
+
+            <button
+              type="button"
+              onClick={handleZoomIn}
+              disabled={zoom >= 4}
+              title="Zoom in"
+            >
+              <ZoomIn size={17} />
+            </button>
+
+          </div>
+
+
+          {/* FULLSCREEN CANVAS */}
+
+          <div className="sq-fullscreen-viewer__canvas">
+
+            <div
+              className="sq-fullscreen-viewer__image-wrap"
+              style={{
+                '--zoom': zoom,
+              }}
+            >
+
+              <img
+                src={currentImage.url}
+                alt={`Fullscreen satellite image ${
+                  activeImageIndex + 1
+                }`}
+                className="sq-fullscreen-viewer__image"
+              />
+
+            </div>
+
+          </div>
+
+
+          <div className="sq-fullscreen-viewer__footer">
+
+            <span>
+              Scroll to explore enlarged imagery
+            </span>
+
+            <span>
+              Press <strong>ESC</strong> to close
+            </span>
+
+          </div>
+
+        </div>
+
       )}
-    </div>
+
+    </>
   );
 }
