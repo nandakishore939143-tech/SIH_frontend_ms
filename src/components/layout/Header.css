@@ -467,3 +467,33 @@
   .sq-header__search-panel { width: 280px; right: -60px; }
   .sq-header__notif-panel  { width: 260px; right: -30px; }
 }
+
+/* =========================================================
+   NOTIFICATION EMPTY STATE
+   ========================================================= */
+
+.sq-header__notif-empty {
+  min-height: 120px;
+  padding: 28px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  text-align: center;
+
+  color: rgba(226, 232, 240, 0.65);
+
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.sq-header__notif-empty svg {
+  width: 20px;
+  height: 20px;
+
+  color: rgba(148, 163, 184, 0.7);
+  stroke-width: 1.8;
+}
