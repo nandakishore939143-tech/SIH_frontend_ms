@@ -1,9 +1,9 @@
 import React from 'react';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import './AIInsights.css';
 
 /**
- * AIInsights — Key AI findings from the analysis
+ * AIInsights — Compact finding cards from AI analysis
  */
 export default function AIInsights({ result, isAnalyzing }) {
   return (
@@ -11,39 +11,54 @@ export default function AIInsights({ result, isAnalyzing }) {
       <div className="sq-insights__header">
         <h2 className="sq-insights__title">
           <span className="sq-insights__icon" aria-hidden="true">
-            <Sparkles size={14} />
+            <Sparkles size={12} />
           </span>
           AI Insights
         </h2>
+        {result && (
+          <span className="sq-insights__badge">{result.findings.length} findings</span>
+        )}
       </div>
+
       <div className="sq-insights__body">
         {isAnalyzing ? (
           <div className="sq-insights__loading" aria-busy="true">
-            <div className="sq-insights__skeleton" />
-            <div className="sq-insights__skeleton sq-insights__skeleton--short" />
-            <div className="sq-insights__skeleton" />
-            <div className="sq-insights__skeleton sq-insights__skeleton--short" />
+            <div className="sq-insights__skeleton-list">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="sq-insights__skeleton-row">
+                  <div className="sq-insights__skeleton-line sq-insights__skeleton-line--label" />
+                  <div className="sq-insights__skeleton-line" />
+                  <div className="sq-insights__skeleton-line sq-insights__skeleton-line--short" />
+                </div>
+              ))}
+            </div>
           </div>
         ) : !result ? (
           <p className="sq-insights__empty">
-            Key findings and AI interpretations<br />will appear here after analysis.
+            AI-generated findings, explanations, and detected patterns will appear here.
           </p>
         ) : (
           <div className="sq-insights__findings">
-            <p className="sq-insights__findings-label">Key Findings</p>
-            <ul className="sq-insights__list">
-              {result.findings.map((finding, idx) => (
-                <li key={idx} className="sq-insights__item">
-                  <span className="sq-insights__item-bullet" aria-hidden="true">
-                    <ArrowRight size={11} />
-                  </span>
-                  <span className="sq-insights__item-text">{finding}</span>
-                </li>
-              ))}
-            </ul>
+            <p className="sq-insights__findings-label">Detected Patterns</p>
+            {result.findings.map((finding, idx) => (
+              <FindingCard key={idx} index={idx} text={finding} />
+            ))}
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+/* Category labels derived from the finding text */
+const CATEGORIES = ['OBSERVATION', 'DETECTION', 'ANALYSIS', 'INTELLIGENCE'];
+
+function FindingCard({ index, text }) {
+  const category = CATEGORIES[index % CATEGORIES.length];
+  return (
+    <div className="sq-finding" style={{ animationDelay: `${index * 0.07}s` }}>
+      <span className="sq-finding__category">{category}</span>
+      <p className="sq-finding__text">{text}</p>
     </div>
   );
 }

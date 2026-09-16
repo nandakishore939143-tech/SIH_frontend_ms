@@ -3,7 +3,7 @@ import { Cpu } from 'lucide-react';
 import './ModelInformation.css';
 
 /**
- * ModelInformation — Shows model name, confidence, resolution, and processing details
+ * ModelInformation — Compact 2×2 grid showing model, confidence, resolution, processing
  */
 export default function ModelInformation({ result, isAnalyzing }) {
   return (
@@ -11,9 +11,9 @@ export default function ModelInformation({ result, isAnalyzing }) {
       <div className="sq-model-info__header">
         <h2 className="sq-model-info__title">
           <span className="sq-model-info__icon" aria-hidden="true">
-            <Cpu size={14} />
+            <Cpu size={12} />
           </span>
-          Model Information
+          Model Intelligence
         </h2>
       </div>
       <div className="sq-model-info__body">
@@ -21,24 +21,23 @@ export default function ModelInformation({ result, isAnalyzing }) {
           <div className="sq-model-info__loading" aria-busy="true">
             <div className="sq-model-info__skeleton-grid">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="sq-model-info__skeleton-item">
-                  <div className="sq-model-info__skeleton sq-model-info__skeleton--label" />
+                <div key={i} className="sq-model-info__skeleton-tile">
                   <div className="sq-model-info__skeleton sq-model-info__skeleton--value" />
+                  <div className="sq-model-info__skeleton sq-model-info__skeleton--label" />
                 </div>
               ))}
             </div>
           </div>
         ) : !result ? (
           <p className="sq-model-info__empty">
-            Selected model, confidence score and<br />processing details will appear here.
+            Model performance, confidence, resolution, and processing details.
           </p>
         ) : (
-          <div className="sq-model-info__grid">
-            <InfoRow label="Model" value={result.model} accent />
-            <InfoRow label="Confidence" value={`${result.confidence.toFixed(1)}%`} highlight />
-            <InfoRow label="Resolution" value={result.resolution} />
-            <InfoRow label="Processing" value={result.processingTime} />
-            <InfoRow label="Analysis Type" value={result.analysisType} />
+          <div className="sq-model-info__stat-grid">
+            <StatTile label="Model" value={result.model} accent />
+            <StatTile label="Confidence" value={`${result.confidence.toFixed(1)}%`} highlight />
+            <StatTile label="Resolution" value={result.resolution} />
+            <StatTile label="Processing" value={result.processingTime} />
           </div>
         )}
       </div>
@@ -46,11 +45,11 @@ export default function ModelInformation({ result, isAnalyzing }) {
   );
 }
 
-function InfoRow({ label, value, accent, highlight }) {
+function StatTile({ label, value, accent, highlight }) {
   return (
-    <div className={`sq-info-row ${accent ? 'sq-info-row--accent' : ''} ${highlight ? 'sq-info-row--highlight' : ''}`}>
-      <span className="sq-info-row__label">{label}</span>
-      <span className="sq-info-row__value">{value}</span>
+    <div className={`sq-stat-tile ${accent ? 'sq-stat-tile--accent' : ''} ${highlight ? 'sq-stat-tile--highlight' : ''}`}>
+      <span className="sq-stat-tile__value">{value}</span>
+      <span className="sq-stat-tile__label">{label}</span>
     </div>
   );
 }

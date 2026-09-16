@@ -5,10 +5,18 @@ import './ImagePreview.css';
 /* Lazy-load the 3D scanner so it only loads when the Analyze page is opened */
 const AnalysisScanner = lazy(() => import('../3d/AnalysisScanner'));
 
+/* Detection overlay labels shown when analysis is complete */
+const DETECTION_OVERLAYS = [
+  { label: 'BUILDINGS', conf: '94%', top: '22%', left: '18%' },
+  { label: 'WATER',     conf: '91%', top: '58%', left: '62%' },
+  { label: 'VEGETATION', conf: '87%', top: '38%', left: '72%' },
+];
+
 /**
- * ImagePreview — Shows uploaded image with zoom controls, comparison mode for two images
+ * ImagePreview — Shows uploaded image with zoom controls, comparison mode for two images,
+ * and subtle AI detection overlays when analysis is complete.
  */
-export default function ImagePreview({ image, secondImage, twoImageMode, isAnalyzing }) {
+export default function ImagePreview({ image, secondImage, twoImageMode, isAnalyzing, analysisResult }) {
   const [zoom, setZoom] = useState(1);
   const [compareMode, setCompareMode] = useState('sideBySide'); // 'sideBySide' | 'overlay'
   const [overlayOpacity, setOverlayOpacity] = useState(0.5);
@@ -21,14 +29,29 @@ export default function ImagePreview({ image, secondImage, twoImageMode, isAnaly
 
   const hasImage = !!image;
   const hasBothImages = hasImage && !!secondImage && twoImageMode;
+  const showDetections = hasImage && !!analysisResult && !isAnalyzing;
+
+  /* Dynamic status label */
+  const statusLabel = isAnalyzing
+    ? 'ANALYZING'
+    : analysisResult
+      ? 'COMPLETE'
+      : hasImage
+        ? 'READY'
+        : 'AWAITING IMAGE';
 
   return (
     <div className={`sq-preview ${fullscreen ? 'sq-preview--fullscreen' : ''}`}>
       <div className="sq-preview__header">
-        <h2 className="sq-preview__title">
-          <span className="sq-preview__title-icon" aria-hidden="true">◎</span>
-          Image Preview
-        </h2>
+        <div className="sq-preview__title-row">
+          <h2 className="sq-preview__title">
+            Satellite View
+          </h2>
+          <span className={`sq-preview__status sq-preview__status--${isAnalyzing ? 'analyzing' : analysisResult ? 'complete' : 'ready'}`}>
+            <span className="sq-preview__status-dot" aria-hidden="true" />
+            {statusLabel}
+          </span>
+        </div>
 
         <div className="sq-preview__controls">
           {hasImage && (
@@ -112,9 +135,9 @@ export default function ImagePreview({ image, secondImage, twoImageMode, isAnaly
                 <div className="sq-preview__radar sq-preview__radar--2" />
                 <div className="sq-preview__radar sq-preview__radar--3" />
               </div>
-              <p className="sq-preview__placeholder-title">Uploaded image will appear here</p>
+              <p className="sq-preview__placeholder-title">Upload Satellite Imagery</p>
               <p className="sq-preview__placeholder-hint">
-                Start by uploading a satellite image<br />to begin analysis.
+                Drop an image here or choose a file to begin.
               </p>
             </div>
           }>
@@ -173,10 +196,31 @@ export default function ImagePreview({ image, secondImage, twoImageMode, isAnaly
               alt={`Uploaded satellite image: ${image.file?.name}`}
               className="sq-preview__img"
             />
+
+            {/* Analyzing overlay */}
             {isAnalyzing && (
               <div className="sq-preview__analyzing-overlay" aria-live="polite">
                 <div className="sq-preview__scan-line" aria-hidden="true" />
-                <span>Analyzing...</span>
+                <div className="sq-preview__analyzing-content">
+                  <div className="sq-preview__analyzing-spinner" aria-hidden="true" />
+                  <span className="sq-preview__analyzing-text">Analyzing Satellite Imagery</span>
+                </div>
+              </div>
+            )}
+
+            {/* AI detection overlays when analysis complete */}
+            {showDetections && (
+              <div className="sq-preview__detection-overlay" aria-hidden="true">
+                {DETECTION_OVERLAYS.map((d) => (
+                  <div
+                    key={d.label}
+                    className="sq-preview__detection-label"
+                    style={{ top: d.top, left: d.left }}
+                  >
+                    <span className="sq-preview__detection-name">{d.label}</span>
+                    <span className="sq-preview__detection-conf">{d.conf}</span>
+                  </div>
+                ))}
               </div>
             )}
           </div>

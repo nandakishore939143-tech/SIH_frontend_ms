@@ -1,6 +1,6 @@
 /* ══════════════════════════════════════════════
-   Analyze Page — AI Intelligence Workspace
-   Layout: ASK | ANALYZE | UNDERSTAND+ACT
+   Analyze Page — Earth Intelligence Workspace
+   Layout: ASK | SATELLITE VIEW | INTELLIGENCE
    ══════════════════════════════════════════════ */
 
 .analyze-page {
@@ -12,23 +12,37 @@
   gap: 0;
 }
 
-/* Workspace page header */
+/* ── Workspace page header ── */
 .analyze-page__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 16px;
+  padding-bottom: 14px;
   margin-bottom: 4px;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
 
+.analyze-page__header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
 .analyze-page__title {
   font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 18px;
+  font-weight: 700;
   color: var(--text-main);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.analyze-page__title-sub {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0.01em;
 }
 
 .analyze-page__flow {
@@ -37,21 +51,22 @@
   gap: 5px;
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.09em;
 }
 
 .analyze-page__flow-step {
   color: var(--text-muted);
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 4px;
   border: 1px solid var(--border);
   transition: all 0.2s;
+  font-family: var(--font-main);
 }
 
 .analyze-page__flow-step--active {
   color: var(--blue-bright);
-  border-color: rgba(77,141,255,0.30);
-  background: rgba(77,141,255,0.07);
+  border-color: rgba(77,141,255,0.28);
+  background: rgba(77,141,255,0.06);
 }
 
 .analyze-page__flow-arrow {
@@ -59,7 +74,7 @@
   font-size: 10px;
 }
 
-/* Three-column workspace */
+/* ── Three-column workspace ── */
 .analyze-workspace {
   display: grid;
   grid-template-columns: 300px 1fr 310px;
@@ -73,7 +88,7 @@
 .analyze-col {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   min-height: 0;
 }
 
@@ -108,7 +123,7 @@
   padding-bottom: 24px;
 }
 
-/* Responsive — tablet */
+/* ── Responsive — tablet ── */
 @media (max-width: 1100px) {
   .analyze-workspace { grid-template-columns: 280px 1fr 280px; gap: 12px; }
 }

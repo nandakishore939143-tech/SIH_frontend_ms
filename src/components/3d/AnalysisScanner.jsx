@@ -13,19 +13,10 @@ function ScanTarget() {
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
-    // Rings rotate at different speeds
     if (ringRef.current)  ringRef.current.rotation.z  = t * 0.6;
     if (ring2Ref.current) ring2Ref.current.rotation.z = -t * 0.35;
-
-    // Beam sweeps around Y axis
     if (beamRef.current) beamRef.current.rotation.y = t * 1.4;
   });
-
-  /* Radar sweep beam — thin flat triangle-ish plane using custom geometry */
-  const beamGeo = React.useMemo(() => {
-    const geo = new THREE.ConeGeometry(0.55, 0.001, 32, 1, true);
-    return geo;
-  }, []);
 
   return (
     <group>
@@ -35,7 +26,7 @@ function ScanTarget() {
         <meshBasicMaterial
           color={new THREE.Color(0x3b82f6)}
           transparent
-          opacity={0.5}
+          opacity={0.45}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
@@ -47,7 +38,7 @@ function ScanTarget() {
         <meshBasicMaterial
           color={new THREE.Color(0x60a5fa)}
           transparent
-          opacity={0.35}
+          opacity={0.30}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
@@ -60,7 +51,7 @@ function ScanTarget() {
           <meshBasicMaterial
             color={new THREE.Color(0x1e40af)}
             transparent
-            opacity={0.4}
+            opacity={0.35}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
             side={THREE.DoubleSide}
@@ -75,7 +66,7 @@ function ScanTarget() {
           <meshBasicMaterial
             color={new THREE.Color(0x3b82f6)}
             transparent
-            opacity={0.08}
+            opacity={0.07}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
             side={THREE.DoubleSide}
@@ -103,7 +94,7 @@ function ScanTarget() {
           <meshBasicMaterial
             color={new THREE.Color(0x93c5fd)}
             transparent
-            opacity={0.7}
+            opacity={0.65}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
           />
@@ -172,7 +163,7 @@ function ScanBeam() {
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
     if (ref.current) {
-      ref.current.material.opacity = 0.06 + 0.04 * Math.sin(t * 3);
+      ref.current.material.opacity = 0.05 + 0.04 * Math.sin(t * 3);
     }
   });
 
@@ -182,7 +173,7 @@ function ScanBeam() {
       <meshBasicMaterial
         color={new THREE.Color(0x3b82f6)}
         transparent
-        opacity={0.08}
+        opacity={0.07}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
         side={THREE.DoubleSide}
@@ -192,7 +183,7 @@ function ScanBeam() {
 }
 
 /* ─────────────────────────────────────
-   Exported AnalysisScanner
+   Scene contents
 ───────────────────────────────────── */
 function SceneContents() {
   return (
@@ -209,6 +200,9 @@ function SceneContents() {
   );
 }
 
+/* ─────────────────────────────────────
+   Exported AnalysisScanner
+───────────────────────────────────── */
 export default function AnalysisScanner() {
   /* WebGL check */
   let webglSupported = true;
@@ -219,16 +213,14 @@ export default function AnalysisScanner() {
 
   if (!webglSupported) {
     return (
-      <div className="sq-preview__placeholder" aria-label="No image uploaded">
-        <div className="sq-preview__placeholder-icon" aria-hidden="true">
+      <div className="sq-analysis-scanner" aria-label="No image uploaded">
+        <div className="sq-analysis-scanner__fallback-icon" aria-hidden="true">
           <div className="sq-preview__radar" />
           <div className="sq-preview__radar sq-preview__radar--2" />
           <div className="sq-preview__radar sq-preview__radar--3" />
         </div>
-        <p className="sq-preview__placeholder-title">Uploaded image will appear here</p>
-        <p className="sq-preview__placeholder-hint">
-          Start by uploading a satellite image<br />to begin analysis.
-        </p>
+        <p className="sq-analysis-scanner__title">Upload Satellite Imagery</p>
+        <p className="sq-analysis-scanner__hint">Drop an image here or choose a file to begin.</p>
       </div>
     );
   }
@@ -239,11 +231,14 @@ export default function AnalysisScanner() {
         camera={{ position: [0, 1.4, 2.2], fov: 38 }}
         gl={{ antialias: true, alpha: true }}
         dpr={[1, 1.5]}
-        style={{ background: 'transparent', width: '100%', height: '100%' }}
+        style={{ background: 'transparent', width: '100%', height: '280px' }}
       >
         <SceneContents />
       </Canvas>
-      <p className="sq-analysis-scanner__hint">Upload an image to begin analysis</p>
+      <div className="sq-analysis-scanner__text">
+        <p className="sq-analysis-scanner__title">Ready for Satellite Analysis</p>
+        <p className="sq-analysis-scanner__hint">Upload imagery to begin.</p>
+      </div>
     </div>
   );
 }

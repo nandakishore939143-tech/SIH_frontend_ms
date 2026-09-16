@@ -1,32 +1,42 @@
+/* ModelInformation — Compact stat grid */
 .sq-model-info {
   background: var(--bg-panel);
   border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
+  transition: border-color 0.22s, box-shadow 0.22s;
+}
+
+.sq-model-info:hover {
+  border-color: rgba(77,141,255,0.11);
+  box-shadow: 0 2px 24px rgba(0,0,0,0.4);
 }
 
 .sq-model-info__header {
-  padding: 12px 16px;
+  padding: 11px 14px;
   border-bottom: 1px solid var(--border);
 }
 
 .sq-model-info__title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-main);
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
   margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--font-main);
 }
 
 .sq-model-info__icon {
   display: inline-flex;
-  color: var(--blue-primary);
+  color: var(--blue);
 }
 
 .sq-model-info__body {
-  padding: 12px 16px;
+  padding: 12px 13px;
 }
 
 .sq-model-info__empty {
@@ -37,72 +47,87 @@
   padding: 4px 0;
 }
 
-/* Loading skeleton */
-
+/* Loading skeleton — 2x2 grid */
 .sq-model-info__skeleton-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
 }
 
-.sq-model-info__skeleton-item {
+.sq-model-info__skeleton-tile {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--border);
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg-raised);
 }
 
 .sq-model-info__skeleton {
-  height: 10px;
-  border-radius: 5px;
-  background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-tertiary) 50%, var(--bg-secondary) 75%);
+  height: 9px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-raised) 50%, var(--bg-card) 75%);
   background-size: 200% 100%;
-  animation: sq-shimmer 1.5s infinite;
+  animation: shimmer 1.5s infinite;
 }
 
-.sq-model-info__skeleton--label { width: 40%; }
-.sq-model-info__skeleton--value { width: 30%; }
+.sq-model-info__skeleton--value { width: 70%; height: 14px; }
+.sq-model-info__skeleton--label { width: 50%; height: 8px; }
 
-/* Grid */
-.sq-model-info__grid {
+/* 2×2 stat tile grid */
+.sq-model-info__stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  animation: fadeInUp 0.3s ease;
+}
+
+.sq-stat-tile {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 3px;
+  padding: 10px 11px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg-raised);
+  transition: border-color 0.18s, transform 0.18s;
 }
 
-.sq-info-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
-  gap: 8px;
+.sq-stat-tile:hover {
+  border-color: rgba(77,141,255,0.20);
+  transform: translateY(-1px);
 }
 
-.sq-info-row:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+.sq-stat-tile--accent {
+  border-color: rgba(77,141,255,0.15);
+  background: rgba(77,141,255,0.04);
 }
 
-.sq-info-row__label {
-  font-size: 12px;
-  color: var(--text-muted);
-  flex-shrink: 0;
+.sq-stat-tile--highlight {
+  border-color: rgba(77,141,255,0.18);
+  background: rgba(77,141,255,0.05);
 }
 
-.sq-info-row__value {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-align: right;
-}
-
-.sq-info-row--accent .sq-info-row__value {
-  color: var(--blue-bright);
-}
-
-.sq-info-row--highlight .sq-info-row__value {
-  color: var(--success);
+.sq-stat-tile__value {
+  font-family: var(--font-display);
+  font-size: 16px;
   font-weight: 700;
+  color: var(--text-main);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sq-stat-tile--accent .sq-stat-tile__value { color: var(--blue-bright); }
+.sq-stat-tile--highlight .sq-stat-tile__value { color: var(--blue-bright); }
+
+.sq-stat-tile__label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color: var(--text-muted);
 }
