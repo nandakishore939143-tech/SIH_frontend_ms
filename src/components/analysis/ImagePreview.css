@@ -4,6 +4,10 @@
    ===================================================== */
 
 .sq-preview {
+  /* Keep the satellite viewer inside its own stacking context. */
+  isolation: isolate;
+  z-index: 1;
+
   display: flex;
   flex-direction: column;
 
@@ -386,6 +390,8 @@
    ===================================================== */
 
 .sq-preview__canvas {
+  isolation: isolate;
+
   position: relative;
 
   flex: 1 1 auto;
@@ -642,6 +648,8 @@
    ===================================================== */
 
 .sq-preview__img-wrap {
+  isolation: isolate;
+
   position: absolute;
 
   inset: 0;
@@ -1218,7 +1226,7 @@
 
   background: #02060c;
 
-  z-index: 99999;
+  z-index: 2147482000;
 
   display: flex;
 

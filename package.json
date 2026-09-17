@@ -15,6 +15,7 @@
     "@react-three/fiber": "^9.7.0",
     "@supabase/supabase-js": "^2.116.0",
     "cors": "^2.8.6",
+    "d3-geo": "^3.1.1",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "lucide-react": "^1.46.0",

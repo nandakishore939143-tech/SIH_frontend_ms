@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Sparkles,
   CheckCircle,
@@ -14,7 +15,7 @@ import {
 import LoadingSpinner from '../ui/LoadingSpinner';
 import './AnalysisResult.css';
 
-export default function AnalysisResult({ result, isAnalyzing }) {
+export default function AnalysisResult({ result, isAnalyzing, query }) {
   const [isExpanded, setIsExpanded] = useState(false);
   /* =====================================================
    ESCAPE KEY — CLOSE EXPANDED ANALYSIS
@@ -53,7 +54,7 @@ export default function AnalysisResult({ result, isAnalyzing }) {
     setIsExpanded((current) => !current);
   };
 
-  return (
+  const resultCard = (
     <div
       className={`sq-result ${
         isExpanded ? 'sq-result--expanded' : ''
@@ -61,19 +62,23 @@ export default function AnalysisResult({ result, isAnalyzing }) {
     >
       {/* HEADER */}
       <div className="sq-result__header">
-        <h2 className="sq-result__title">
-          <span className="sq-result__icon" aria-hidden="true">
-            <Sparkles size={15} />
-          </span>
+        <div className="sq-result__header-left">
+          <h2 className="sq-result__title">
+            <span className="sq-result__icon" aria-hidden="true">
+              <Sparkles size={15} />
+            </span>
 
-          AI Intelligence
-        </h2>
+            <span className="sq-result__title-text">
+              AI Intelligence
+            </span>
+          </h2>
+        </div>
 
         <div className="sq-result__header-actions">
           {result && (
             <span className="sq-result__badge sq-result__badge--success">
               <CheckCircle size={11} />
-              Analysis Complete
+              <span>Analysis Complete</span>
             </span>
           )}
 
@@ -169,6 +174,25 @@ export default function AnalysisResult({ result, isAnalyzing }) {
             className="sq-result__data"
             aria-label="Analysis results"
           >
+            {/* =====================================================
+                ANALYSIS QUERY
+                ===================================================== */}
+
+            <div className="sq-result__query">
+              <div className="sq-result__query-header">
+                <span className="sq-result__query-icon">
+                  <Sparkles size={13} />
+                </span>
+
+                <span className="sq-result__query-label">
+                  ANALYSIS QUERY
+                </span>
+              </div>
+
+              <p className="sq-result__query-text">
+                {query?.trim() || 'Satellite imagery analysis'}
+              </p>
+            </div>
             {/* CONFIDENCE */}
             <div className="sq-result__confidence-hero">
               <span className="sq-result__confidence-number">
@@ -251,6 +275,32 @@ export default function AnalysisResult({ result, isAnalyzing }) {
               </div>
             </div>
 
+            {/* =====================================================
+                ANALYSIS DESCRIPTION
+                ===================================================== */}
+            <div className="sq-result__description">
+              <div className="sq-result__description-header">
+                <span className="sq-result__description-icon">
+                  <Sparkles size={14} />
+                </span>
+
+                <span>Analysis Description</span>
+              </div>
+
+              <p className="sq-result__description-text">
+                {result.description ||
+                  result.explanation ||
+                  result.summary ||
+                  result.insight ||
+                  `The analyzed satellite imagery shows a mixed terrain with
+                  ${vegetation}% vegetation coverage, ${buildings} detected
+                  buildings, and ${waterBodies} identified water bodies.
+                  These features indicate a combination of natural and
+                  developed land cover within the observed area. The analysis
+                  was completed with ${confidence.toFixed(1)}% confidence.`}
+              </p>
+            </div>
+
             {/* AI INSIGHT — INSIDE MAIN CARD */}
             {(result.summary ||
               result.description ||
@@ -324,6 +374,26 @@ export default function AnalysisResult({ result, isAnalyzing }) {
       </div>
     </div>
   );
+
+  /*
+   * Expanded analysis is rendered directly under <body>.
+   * This prevents ImagePreview, its canvas layers, and any
+   * ancestor stacking contexts from appearing above it.
+   */
+  if (isExpanded) {
+    return createPortal(
+      <>
+        <div
+          className="sq-result__backdrop"
+          aria-hidden="true"
+        />
+        {resultCard}
+      </>,
+      document.body
+    );
+  }
+
+  return resultCard;
 }
 
 
