@@ -3,7 +3,6 @@ import React, { useState, useCallback } from 'react';
 import QueryPanel from '../components/analysis/QueryPanel';
 import ImagePreview from '../components/analysis/ImagePreview';
 import AnalysisResult from '../components/analysis/AnalysisResult';
-import AIInsights from '../components/analysis/AIInsights';
 import ModelInformation from '../components/analysis/ModelInformation';
 import FollowUp from '../components/analysis/FollowUp';
 import ExampleQueries from '../components/analysis/ExampleQueries';
@@ -52,7 +51,9 @@ export default function Analyze() {
       Keep currently selected image valid.
     */
     setActiveImageIndex((currentIndex) => {
-      if (newImages.length === 0) return 0;
+      if (newImages.length === 0) {
+        return 0;
+      }
 
       return Math.min(
         currentIndex,
@@ -256,21 +257,21 @@ export default function Analyze() {
 
         <div className="analyze-col analyze-col--results">
 
+          {/* PRIMARY ANALYSIS CARD */}
           <AnalysisResult
             result={analysisResult}
             isAnalyzing={isAnalyzing}
           />
 
-          <AIInsights
-            result={analysisResult}
-            isAnalyzing={isAnalyzing}
-          />
 
+          {/* SECONDARY INFORMATION */}
           <ModelInformation
             result={analysisResult}
             isAnalyzing={isAnalyzing}
           />
 
+
+          {/* FOLLOW-UP QUESTIONS */}
           <FollowUp
             analysisResult={analysisResult}
           />
